@@ -82,7 +82,7 @@ class Rotatable extends Component {
       return;
     }
 
-    const { onRotate } = this.props;
+    const { onRotate, rotateParent } = this.props;
     const bounds = this.rotatable.getBoundingClientRect();
     const centerX = bounds.left + (this.rotatable.clientWidth / 2);
     const centerY = bounds.top + (this.rotatable.clientHeight / 2);
@@ -92,9 +92,14 @@ class Rotatable extends Component {
     const angleDeg = angleRad * ( 180 / Math.PI);
 
     // For translate rule.
-    const matrixArray = getTransformMatrix(this.rotatable);
-    this.rotatable.style.transform = `translate(${matrixArray[4]}px, ${matrixArray[5]}px) rotate(${angleDeg}deg)`;
-
+    if (rotateParent && this.rotatable.parentNode) {
+      const matrixArray = getTransformMatrix(this.rotatable.parentNode);
+      this.rotatable.parentNode.style.transform = `translate(${ matrixArray[4]}px, ${ matrixArray[5]}px) rotate(${ angleDeg }deg)`;
+    } else {
+      const matrixArray = getTransformMatrix(this.rotatable);
+      this.rotatable.style.transform = `translate(${ matrixArray[4]}px, ${ matrixArray[5]}px) rotate(${ angleDeg }deg)`;
+    }
+  
     const angleNormalized = angleDeg > 0 ? angleDeg : 360 + angleDeg;
 
     this.setState({ angle: angleNormalized }, () => {
@@ -135,10 +140,12 @@ Rotatable.propTypes = {
   onRotate: PropTypes.func,
   onRotateStop: PropTypes.func,
   canRotate: PropTypes.bool,
+  rotateParent: PropTypes.bool,
 };
 
 Rotatable.defaultProps = {
-  canRotate: true
+  canRotate: true,
+  rotateParent: false,
 };
 
 export default Rotatable;
