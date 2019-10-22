@@ -99,7 +99,7 @@ class Rotatable extends Component {
       const matrixArray = getTransformMatrix(this.rotatable);
       this.rotatable.style.transform = `translate(${ matrixArray[4]}px, ${ matrixArray[5]}px) rotate(${ angleDeg }deg)`;
     }
-  
+
     const angleNormalized = angleDeg > 0 ? angleDeg : 360 + angleDeg;
 
     this.setState({ angle: angleNormalized }, () => {
